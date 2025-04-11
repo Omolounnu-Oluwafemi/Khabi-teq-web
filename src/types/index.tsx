@@ -76,6 +76,11 @@ export interface GlobalContextTypes {
       isAwatingUpgrade: boolean;
       isUpgraded: boolean;
     };
+    onUpgradeData: {
+      companyName: string;
+      regNo: number;
+      image: string[];
+    };
   };
   setSettings: ({}: {
     selectedNav: string;
@@ -85,6 +90,35 @@ export interface GlobalContextTypes {
       isAwatingUpgrade: boolean;
       isUpgraded: boolean;
     };
+    onUpgradeData: {
+      companyName: string;
+      regNo: number;
+      image: string[];
+    };
+  }) => void;
+
+  userDetails: {
+    name: string;
+    email: string;
+    profile_picture: string;
+    address: {
+      localGovtArea: string;
+      state: string;
+      street: string;
+    };
+    regionsOfOperation: string[];
+  };
+
+  setUserDetails: ({}: {
+    name: string;
+    email: string;
+    profile_picture: string;
+    address: {
+      localGovtArea: string;
+      state: string;
+      street: string;
+    };
+    regionsOfOperation: string[];
   }) => void;
 
   /**Dashboard Types */

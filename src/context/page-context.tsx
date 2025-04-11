@@ -101,6 +101,22 @@ export const PageContextProvider = ({
       isAwatingUpgrade: false,
       isUpgraded: false,
     },
+    onUpgradeData: {
+      companyName: '',
+      regNo: 0,
+      image: [''],
+    },
+  });
+  const [userDetails, setUserDetails] = useState({
+    name: '',
+    email: '',
+    profile_picture: '',
+    address: {
+      localGovtArea: '',
+      state: '',
+      street: '',
+    },
+    regionsOfOperation: [''],
   });
 
   /**
@@ -147,6 +163,8 @@ export const PageContextProvider = ({
         setSettings,
         dashboard,
         setDashboard,
+        userDetails,
+        setUserDetails,
       }}>
       {children}
     </PageContext.Provider>
