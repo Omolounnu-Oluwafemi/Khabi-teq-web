@@ -80,17 +80,16 @@ const Mobile = ({
               heading=''
             />
             {/**other content */}
-            <div className="flex w-full gap-[20px]">
-              <label htmlFor="market_place_type" className="flex-1">
+            <div className='flex w-full gap-[20px]'>
+              <label htmlFor='market_place_type' className='flex-1'>
                 <select
                   onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
                     setSelectedType(event.target.value)
                   }
-                  className="w-full h-[34px] px-[12px] border-[1px] border-[#D6DDEB] text-xs"
-                  title="Select option"
-                  name="market_place_type"
-                  id="market_place_type"
-                >
+                  className='w-full h-[34px] px-[12px] border-[1px] border-[#D6DDEB] text-xs'
+                  title='Select option'
+                  name='market_place_type'
+                  id='market_place_type'>
                   {[
                     'Buy a property',
                     'Find property for Joint Venture',
@@ -102,29 +101,28 @@ const Mobile = ({
                   ))}
                 </select>
               </label>
-                <button
-                  title="List property"
-                  className="w-[30%] h-[34px] bg-[#8DDB90] text-white text-xs font-medium shadow-md shadow-[#a7e2a9] "
-                  type="button"
-                >
-                  List Property
-                </button>
+              <button
+                title='List property'
+                className='w-[30%] h-[34px] bg-[#8DDB90] text-white text-xs font-medium shadow-md shadow-[#a7e2a9] '
+                type='button'>
+                List Property
+              </button>
             </div>
 
-              <div className="grid grid-cols-2 gap-[10px]">
-                <button
-                  onClick={handleSubmit}
-                  className='h-[34px] w-full bg-[#8DDB90] px-[12px] text-white text-xs font-bold'
-                  type='button'>
-                  Search
-                </button>
-                <button
-                  onClick={() => setIsFilterModalOpened(!isFilterModalOpened)}
-                  className='border-[1px] px-[8px] border-[#09391C] w-full h-[34px] text-xs text-[#09391C]'
-                  type='button'>
-                  filter
-                </button>
-              </div>
+            <div className='grid grid-cols-2 gap-[10px]'>
+              <button
+                onClick={handleSubmit}
+                className='h-[34px] w-full bg-[#8DDB90] px-[12px] text-white text-xs font-bold'
+                type='button'>
+                Search
+              </button>
+              <button
+                onClick={() => setIsFilterModalOpened(!isFilterModalOpened)}
+                className='border-[1px] px-[8px] border-[#09391C] w-full h-[34px] text-xs text-[#09391C]'
+                type='button'>
+                filter
+              </button>
+            </div>
           </article>
         </div>
         <div
@@ -134,29 +132,32 @@ const Mobile = ({
           {selectedMarketPlace && renderBrief(onSelectBrief)}
         </div>
       </div>
-      {isFilterModalOpened && (
-        <Filter
-          setPayloadFromFilter={setPayloadFromFilter}
-          closeModal={setIsFilterModalOpened}
-        />
-      )}
+      <AnimatePresence>
+        {isFilterModalOpened && (
+          <Filter
+            setPayloadFromFilter={setPayloadFromFilter}
+            closeModal={setIsFilterModalOpened}
+          />
+        )}
+      </AnimatePresence>
 
-            {/* Selected Briefs Section */}
-      <div className="w-full flex flex-col gap-3 bg-white py-5 px-5">
-        <div className="text-[#000] text-base font-medium">
-          <span className="text-red-500 font-bold">({selectedBriefs})</span> Brief{Number(selectedBriefs) === 1 ? '' : 's'} selected for inspection
+      {/* Selected Briefs Section */}
+      <div className='w-full flex flex-col gap-3 bg-white py-5 px-5'>
+        <div className='text-[#000] text-base font-medium'>
+          <span className='text-red-500 font-bold'>({selectedBriefs})</span>{' '}
+          Brief{Number(selectedBriefs) === 1 ? '' : 's'} selected for inspection
         </div>
-        <div className="flex gap-3 w-full ">
+        <div className='flex gap-3 w-full '>
           <button
-            className=" h-[50px] border-[1px] border-[#5A5D6380] text-[#09391C] font-medium w-[40%]"
-            type="button"
+            className=' h-[50px] border-[1px] border-[#5A5D6380] text-[#09391C] font-medium w-[40%]'
+            type='button'
             // onClick={handleViewBrief}
           >
             View Listing
           </button>
           <button
-            className="h-[50px] bg-[#8DDB90] text-white font-medium w-[60%]"
-            type="button"
+            className='h-[50px] bg-[#8DDB90] text-white font-medium w-[60%]'
+            type='button'
             // onClick={handleSubmitForInspection}
           >
             Submit for inspection

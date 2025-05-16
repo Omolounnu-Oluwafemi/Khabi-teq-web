@@ -20,11 +20,31 @@ import { URLS } from '@/utils/URLS';
 import { shuffleArray } from '@/utils/shuffleArray';
 import { useRouter } from 'next/navigation';
 
-const SearchModal = () => {
+type PayloadProps = {
+  twoDifferentInspectionAreas: boolean;
+  initialAmount: number;
+  toBeIncreaseBy: number;
+};
+
+const SearchModal = ({
+  isAddForInspectionModalOpened,
+  setIsAddInspectionModalOpened,
+  setPropertiesSelected,
+  propertiesSelected,
+  addForInspectionPayload,
+  setAddForInspectionPayload,
+}: {
+  isAddForInspectionModalOpened: boolean;
+  setIsAddInspectionModalOpened: (type: boolean) => void;
+  propertiesSelected: any[];
+  setPropertiesSelected: (type: any[]) => void;
+  addForInspectionPayload: PayloadProps;
+  setAddForInspectionPayload: (type: PayloadProps) => void;
+}) => {
   const [selectedType, setSelectedType] = useState<string>('Land');
   const { selectedType: userSelectedMarketPlace } = usePageContext();
-  const [uniqueProperties, setUniqueProperties] = useState<Set<string>>(
-    new Set()
+  const [uniqueProperties, setUniqueProperties] = useState<Set<any>>(
+    new Set(propertiesSelected)
   );
   const [formikStatus, setFormikStatus] = useState<
     'idle' | 'pending' | 'success' | 'failed'
@@ -64,8 +84,11 @@ const SearchModal = () => {
           <div className='relative w-full flex flex-col'>
             <BuyAPropertySearchModal
               usageOptions={usageOptions}
+              addForInspectionPayload={addForInspectionPayload}
               setUsageOptions={setUsageOptions}
               selectedBriefs={uniqueProperties.size}
+              setSelectedBriefs={setUniqueProperties}
+              setAddInspectionModal={setIsAddInspectionModalOpened}
             />
             <section className='w-full flex-1 overflow-y-auto flex justify-center items-start md:mt-[20px]'>
               {(formikStatus || usageOptions) &&
@@ -135,7 +158,7 @@ const SearchModal = () => {
                     router.push(`/property/${type}/${property._id}`);
                   }}
                   onClick={() => {
-                    handlePropertiesSelection(idx.toLocaleString());
+                    handlePropertiesSelection(property);
                   }}
                   cardData={[
                     {
@@ -163,7 +186,7 @@ const SearchModal = () => {
                     },
                   ]}
                   key={idx}
-                  isDisabled={uniqueProperties.has(idx.toLocaleString())}
+                  isDisabled={uniqueProperties.has(property)}
                 />
               );
             } else if (
@@ -178,9 +201,9 @@ const SearchModal = () => {
                   onCardPageClick={() => {
                     router.push(`/property/${type}/${property._id}`);
                   }}
-                  onClick={() =>
-                    handlePropertiesSelection(idx.toLocaleString())
-                  }
+                  onClick={() => {
+                    handlePropertiesSelection(property);
+                  }}
                   cardData={[
                     {
                       header: 'Property Type',
@@ -207,7 +230,7 @@ const SearchModal = () => {
                     },
                   ]}
                   key={idx}
-                  isDisabled={uniqueProperties.has(idx.toLocaleString())}
+                  isDisabled={uniqueProperties.has(property)}
                 />
               );
             }
@@ -217,10 +240,10 @@ const SearchModal = () => {
             return (
               <JointVentureModalCard
                 key={idx}
-                onClick={() => handlePropertiesSelection(idx.toLocaleString())}
-                isDisabled={uniqueProperties.has(idx.toLocaleString())} 
-                cardData={[]} 
-                images={[]}              
+                onClick={() => handlePropertiesSelection(property)}
+                isDisabled={uniqueProperties.has(property)}
+                cardData={[]}
+                images={[]}
               />
             );
           });
@@ -250,9 +273,9 @@ const SearchModal = () => {
                   onCardPageClick={() => {
                     router.push(`/property/Rent/${property._id}`);
                   }}
-                  onClick={() =>
-                    handlePropertiesSelection(idx.toLocaleString())
-                  }
+                  onClick={() => {
+                    handlePropertiesSelection(property);
+                  }}
                   cardData={[
                     {
                       header: 'Property Type',
@@ -281,7 +304,7 @@ const SearchModal = () => {
                     },
                   ]}
                   key={idx}
-                  isDisabled={uniqueProperties.has(idx.toLocaleString())}
+                  isDisabled={uniqueProperties.has(property)}
                 />
               );
             } else if (
@@ -297,9 +320,9 @@ const SearchModal = () => {
                   onCardPageClick={() => {
                     router.push(`/property/Rent/${property._id}`);
                   }}
-                  onClick={() =>
-                    handlePropertiesSelection(idx.toLocaleString())
-                  }
+                  onClick={() => {
+                    handlePropertiesSelection(property);
+                  }}
                   cardData={[
                     {
                       header: 'Property Type',
@@ -328,7 +351,7 @@ const SearchModal = () => {
                     },
                   ]}
                   key={idx}
-                  isDisabled={uniqueProperties.has(idx.toLocaleString())}
+                  isDisabled={uniqueProperties.has(property)}
                 />
               );
             }
@@ -357,13 +380,44 @@ const SearchModal = () => {
     }
   };
 
-  const handlePropertiesSelection = (id: string) => {
-    if (uniqueProperties.has(id)) {
-      return toast.error('Property already selected');
+  const handlePropertiesSelection = (property: any) => {
+    console.log('Clicked');
+    if (uniqueProperties.size === 3) {
+      return toast.error('Maximum of 3 reached');
     }
-    setUniqueProperties((prev) => new Set([...prev, id]));
+    uniqueProperties.add(property);
+    setPropertiesSelected(Array.from(uniqueProperties));
     toast.success('Property selected');
   };
+
+  useEffect(() => {
+    //update the payload whenever the propertiesSelected changes
+    const [a, b, c] = propertiesSelected.map((item) => item.location.state);
+
+    const uniqueStates = new Set([a, b, c]);
+    if (uniqueStates.size === 1) {
+      //All states are the same
+      setAddForInspectionPayload({
+        initialAmount: 10000,
+        toBeIncreaseBy: 0,
+        twoDifferentInspectionAreas: false,
+      });
+    } else if (uniqueStates.size === 2) {
+      //One is different
+      setAddForInspectionPayload({
+        initialAmount: 10000,
+        toBeIncreaseBy: 5000,
+        twoDifferentInspectionAreas: true,
+      });
+    } else if (uniqueStates.size === 3) {
+      //All are different
+      setAddForInspectionPayload({
+        initialAmount: 0,
+        toBeIncreaseBy: 0,
+        twoDifferentInspectionAreas: true,
+      });
+    }
+  }, [propertiesSelected]);
 
   const is_mobile = IsMobile();
 
@@ -421,7 +475,7 @@ const SearchModal = () => {
           onSelectBrief={handlePropertiesSelection}
         />
       ) : (
-        userSelectedMarketPlace && renderDynamicComponent()
+        <>{userSelectedMarketPlace && renderDynamicComponent()}</>
       )}
     </Fragment>
   );
